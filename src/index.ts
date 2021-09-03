@@ -1,11 +1,16 @@
-import { visit } from "unist-util-visit";
+import { visit, Visitor } from "unist-util-visit";
 import { Transformer, Plugin } from "unified";
+import { Element } from "hast";
 
-const transformer: Transformer = (tree, file) => {
-	console.log("me", tree);
-	visit(tree, (node) => {
-		console.log(node);
-	});
+const visitor: Visitor<Element> = (element) => {
+	if (element.type !== "element") return;
+	const line = element.position?.start.line ?? "null";
+	if (element.properties === undefined) element.properties = {};
+	element.properties["data-line"] = line;
+};
+
+const transformer: Transformer = (tree) => {
+	visit(tree, "element", visitor);
 };
 
 export const rehypeSourceMap: Plugin = () => {

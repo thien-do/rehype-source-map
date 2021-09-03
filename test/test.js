@@ -1,33 +1,20 @@
-import { unified } from "unified";
+import assert from "assert";
+import stringify from "rehype-stringify";
 import parse from "remark-parse";
 import rehype from "remark-rehype";
-import stringify from "rehype-stringify";
+import { unified } from "unified";
 import { rehypeSourceMap } from "../dist/index.js";
 
-const doc = `
-# Hello World
-
-## Table of Content
-
-## Install
-
-A **example**.
-
-## Use
-
-More \`text\`.
-
-## License
-
-MIT
-`;
-
-const result = unified()
+const processor = unified()
 	.use(parse)
 	.use(rehype)
 	.use(stringify)
-	.use(rehypeSourceMap)
-	.processSync(doc)
-	.toString();
+	.use(rehypeSourceMap);
 
-console.log(result);
+const process = (text) => processor.processSync(text).toString();
+
+assert.strictEqual(
+	process(`First line\n\nSecond line`),
+	`<p data-line="1">First line</p>\n<p data-line="3">Second line</p>`,
+	`Should add "data-line" correctly`
+);

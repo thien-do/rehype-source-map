@@ -7,6 +7,9 @@
 	"author": "Thien Do <hello@thien.do>",
 	"license": "MIT",
 	"type": "module",
+	"files": [
+		"dist"
+	],
 	"scripts": {
 		"build": "tsc",
 		"test": "node ./test/test.js"
